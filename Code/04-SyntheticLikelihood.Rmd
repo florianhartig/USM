@@ -1,0 +1,68 @@
+---
+title: "Synthetic Likelihoods"
+author: "Florian Hartig"
+date: "30 Jul 2014"
+output: html_document
+---
+
+# Modell wrapper
+
+```{r}
+
+source("/03-helperFunctions.R")
+
+
+simplifiedSim <- function(pars, rep=1, returnAverage = T) simulate(pars, no.repeated.sim=rep,nl.obj=model, 
+                                                                   parameter.names=c('scout-prob', 'survival-prob', 'scouting-survival'),
+                                                                   returnAverage = returnAverage)
+
+```
+
+
+# Daten erzeugen
+
+Ich nehme gleich mal den Durchschnitt von 20 Läufen um representative Daten zu bekommen
+
+```{r}
+
+trueParameters = c(0.4, 0.97, 0.9)
+observedData <-  simplifiedSim(trueParameters, rep = 20, returnAverage = T)
+
+
+```
+
+OK, die Daten wollen wir nutzen um das Modell zu fitten
+
+
+# Fit via "synthetic likelihood"
+
+Details der Methode sind erklärt in Hartig, F.; Calabrese, J. M.; Reineking, B.; Wiegand, T. & Huth, A. (2011) Statistical inference for stochastic simulation models - theory and application. Ecol. Lett., 14, 816-827.
+
+In unsere fit funktion evaluieren wir das modell mehrmals (20x), und berechnen dann mean und sd. Wir gehen davon aus dass die simulationsergebnisse normalverteilt streuen. Dann können wir dnorm verwenden um die Wahrscheinlichkeit abzulesen dass man mit diesen Parameter die beobachteten Daten aus der Simulation bekommen würde
+
+```{r}
+
+fit <- function(pars){
+  simdat <- simplifiedSim(pars, rep = 20, returnAverage = F)[,1]
+  return(dnorm(observedData[1], mean = mean(simdat), sd =  sd(simdat), log = F))}
+
+
+```
+
+Ich habe hier nur einen der Modelloutputs verwendet, deshalb können wir auch nur einen Parameter fitten. Die Methode funktioniert natürlich auch mehrdimensional, aber wir haben gestern gesehen dass die Outputs stark korreliert sind (wenn ihr euch nicht mehr erinnert lass noch mal die skripts von gestern laufen und schaut auf den pair output).
+
+Wenn es solche Korrelationen gibt passt die Normalverteilung u.U. nicht mehr gut um die "synthetische" Likelihood zu erzeugen
+
+```{r}
+
+n = 30
+
+parameters<-cbind(rep(0.4,n), seq(0.95, 0.99, length.out = n), rep(0.9,n))
+
+result <- apply(parameters, 1, fit )
+
+plot(seq(0.95, 0.99, length.out = n), result, type = "b")
+
+
+```
+

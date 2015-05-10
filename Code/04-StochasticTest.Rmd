@@ -1,0 +1,34 @@
+---
+title: "Testing Correlations"
+author: "Florian Hartig"
+date: "31 Jul 2014"
+output: html_document
+---
+
+
+
+# Running the model
+
+```{r}
+
+
+source("03-helperFunctions.R")
+
+simplifiedSim <- function(pars, rep=1, returnAverage = T) simulate(pars, no.repeated.sim=rep,nl.obj=model, 
+                                         parameter.names=c('scout-prob', 'survival-prob', 'scouting-survival'),
+                                         returnAverage = returnAverage)
+
+test <- simplifiedSim(c(0.7, 0.97, 0.9), rep = 300, returnAverage = F)
+
+```
+
+
+# Plotting the output
+
+```{r}
+library(devtools)
+source_url('https://raw.githubusercontent.com/florianhartig/LearningBayes/master/CommentedCode/02-Samplers/Analysis/MCMC_PlottingOptions.r')
+
+betterPairs(test)
+```
+
