@@ -1,0 +1,38 @@
+---
+title: "RNetLogo"
+output: pdf_document
+---
+
+```{r}
+library(RNetLogo)
+```
+
+Funktionen siehe ?RNetLogo, und dann auf Index unten klicken
+
+
+
+```{r}
+nl.path <- "C:/Program Files/NetLogo 5.1.0"
+NLStart(nl.path, gui=F)
+
+absolute.model.path <- "D:./Flocking.nlogo"
+NLLoadModel(absolute.model.path)
+
+
+NLCommand("setup")
+
+# Schaltet vorher die Visualisierung aus wenn ihr das so lange laufen lassen wollt
+
+NLDoCommand(20, "go")
+
+res = NLDoReport(20, "go", c(
+  "count turtles", 
+  "mean [count turtles in-radius 2] of turtles"), 
+, as.data.frame=T)
+
+hist(res$X2)
+
+NLQuit()
+
+```
+

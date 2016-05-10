@@ -20,11 +20,12 @@ end
 
 to go
   ask patches with [status = 3]
-    [ ask neighbors4 with [status = 2]
+  [ ask neighbors4 with [status = 2]
         [ set status 3
           set pcolor red ]
       set status 4 
       set pcolor brown]
+    
   tick
 end
 @#$#@#$#@

@@ -1,0 +1,153 @@
+---
+title: "Methoden für globale Sensitivitätsanalyse"
+author: "Florian Hartig"
+date: "13 Jul 2015"
+output: html_document
+---
+
+```{r}
+library(sensitivity)
+```
+
+
+
+
+# Test funktion
+
+The function of Ishigami
+
+```{r}
+ishigami.fun
+```
+
+
+Scatterplots for the Ishigami function versus X1, X2 and X3
+
+```{r}
+n <- 2000
+x <- matrix(nr = n, nc = 3)
+for (i in 1:3)
+x[, i] <- runif(n, min = -pi, max = pi)
+y <- ishigami.fun(x)
+plot(x[, 1], y)
+plot(x[, 2], y)
+plot(x[, 3], y)
+```
+
+NOTE: the function has 3 parameters, but I will use it with 4 below, so the 4th parameter has absolutely no effect on the output!
+
+# Lokale SA
+
+Only for par 2
+
+```{r}
+n <- 2000
+x <- matrix(nr = n, nc = 3)
+x[,1] = 1.5
+x[, 2] <- runif(n, min = -pi, max = pi)
+x[, 3] <- 1.5
+y <- ishigami.fun(x)
+plot(x[, 2], y)
+```
+
+Note that your sensitivity coefficients for x2 would depend on your choice of the distance e.g. (+- 10%) as well as on your choice of default
+
+
+# Global methods
+
+
+
+## Morris Screening
+
+Morris implements the Morris's elementary effects screening method (Morris 1992). This method, based on design of experiments, allows to identify the few important factors at a cost of r * (p + 1) simulations (where p is the number of factors). This implementation includes some improvements of the original method: space-filling optimization of the design (Campolongo et al. 2007) and simplex-based design (Pujol 2009).
+
+
+```{r}
+
+morrisOut <- morris(model = ishigami.fun, factors = 4, r = 10,
+            design = list(type = "oat", levels = 10, grid.jump = 5), bsup = 3)
+print(morrisOut)
+plot(morrisOut)
+
+
+```
+
+
+## Sobol 
+
+
+Sobol implements the Monte Carlo estimation of the Sobol' sensitivity indices. This method allows the estimation of the indices of the variance decomposition, sometimes referred to as functional ANOVA decomposition, up to a given order, at a total cost of (N + 1) * n where N is the number of indices to estimate. This function allows also the estimation of the so-called subset indices, i.e. the first-order indices with respect to single multidimensional inputs.
+
+```{r}
+n <- 1000
+X1 <- data.frame(matrix(runif(4 * n, max = 3), nrow = n))
+X2 <- data.frame(matrix(runif(4 * n, max = 3), nrow = n))
+
+sobolOut <- sobol(model = ishigami.fun, X1, X2, order = 2, nboot = 100)
+
+print(sobolOut)
+plot(sobolOut)
+
+```
+
+
+## Standardized Regression Coefficients
+
+src computes the Standardized Regression Coefficients (SRC), or the Standardized Rank Regression Coefficients (SRRC), which are sensitivity indices based on linear or monotonic assumptions in the case of independent factors.
+
+```{r}
+
+n <- 1000
+X <- data.frame(matrix(runif(4 * n, max = 3), nrow = n))
+y <-ishigami.fun(X)
+
+
+x1 <- src(X, y, nboot = 100, rank = F)
+print(x1)
+plot(x1)
+
+x2 <- src(X, y, nboot = 100, rank = T)
+print(x2)
+plot(x2)
+```
+
+pcc computes the Partial Correlation Coefficients (PCC), or Partial Rank Correlation Coefficients (PRCC), which are sensitivity indices based on linear (resp. monotonic) assumptions, in the case of (linearly) correlated factors.
+
+```{r}
+x1 <- pcc(X, y, nboot = 100, rank = F)
+print(x1)
+plot(x1)
+
+x2 <- pcc(X, y, nboot = 100, rank = T)
+print(x2)
+plot(x2)
+
+```
+
+
+## Delsa
+
+Delsa implements Distributed Evaluation of Local Sensitivity Analysis to calculate first order parameter sensitivity at multiple locations in parameter space. The locations in parameter space can either be obtained by a call to parameterSets or by specifying X0 directly, in which case the prior variance of each parameter varprior also needs to be specified. Via plot (which uses functions of the package ggplot2 and reshape2), the indices can be visualized. 
+
+```{r}
+# Test case : the non-monotonic Sobol g-function
+# (there are 8 factors, all following the uniform distribution on [0,1])
+
+## Not run: 
+library(sensitivity)
+library(randtoolbox)
+x <- delsa(model=ishigami.fun,
+           par.ranges=replicate(4,c(0,3),simplify=FALSE),
+           samples=100,method="sobol")
+
+# Summary of sensitivity indices of each parameter across parameter space
+print(x)
+
+library(ggplot2)
+library(reshape2)
+plot(x)
+```
+
+
+
+

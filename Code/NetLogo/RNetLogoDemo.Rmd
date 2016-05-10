@@ -1,0 +1,38 @@
+---
+title: "RNetLogo Demo"
+author: "Florian Hartig"
+date: "13 Jul 2015"
+output: html_document
+---
+
+## Not run: 
+
+packageurl <- "http://cran.r-project.org/src/contrib/Archive/RNetLogo/RNetLogo_1.0-0.tar.gz"
+install.packages(packageurl, repos=NULL, type="source")
+
+
+```{r}
+library(RNetLogo)
+nl.path <- "C:/Program Files/NetLogo 5.1.0" # Windows
+nl.path <- "/Applications/NetLogo 5.1.0" # Mac
+NLStart(nl.path)
+```
+
+
+
+```{r}
+model.path <- "/models/Sample Models/Earth Science/Fire.nlogo"
+NLLoadModel(paste(nl.path,model.path,sep=""))
+NLCommand("setup")
+NLDoCommand(10, "go")
+burned <- NLReport("burned-trees")
+print(burned)
+```
+
+
+```{r}
+NLQuit()
+```
+
+
+
