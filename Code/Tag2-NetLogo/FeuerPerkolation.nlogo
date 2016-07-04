@@ -1,36 +1,35 @@
-globals[
- ; initial-treedensity
+globals [
+  ; initial-treedensity
 ]
 
-patches-own[status] ; 1=bare, 2 = tree, 3 = burning, 4 = burned
+patches-own [status]  ; 1 = bare, 2 = tree, 3 = burning, 4 = burned
 
 
 to setup
   clear-all
   ask patches [set status 1]
-  
-  ask patches with [(random-float 1) < initial-treedensity] [
+  ;; create trees
+  ask patches with [(random-float 1) < initial-treedensity][ 
     set status 2
     set pcolor green 
-  ]
-  
-  ask patches with [pxcor = min-pxcor and status = 2][
+  ]  
+  ;; create fire
+  ask patches with [pxcor = min-pxcor and status = 2][ 
     set status 3
     set pcolor red
   ]
   reset-ticks
 end
 
-
 to go
-  ask patches with [status = 3][
-    ask neighbors4 with [status = 2][
+  ask patches with [status = 3][ 
+    ask neighbors4 with [status = 2][ 
       set status 3
-      set pcolor red 
+      set pcolor red
     ]
-    set status 4
+    set status 4 
     set pcolor brown
-  ]
+  ]  
   tick
 end
 
@@ -42,11 +41,11 @@ end
 GRAPHICS-WINDOW
 210
 10
-826
-647
+725
+546
 50
 50
-6.0
+5.0
 1
 10
 1
@@ -54,7 +53,7 @@ GRAPHICS-WINDOW
 1
 0
 0
-1
+0
 1
 -50
 50
@@ -66,26 +65,11 @@ GRAPHICS-WINDOW
 ticks
 30.0
 
-SLIDER
-19
-132
-191
-165
-initial-treedensity
-initial-treedensity
-0
-1
-1
-0.01
-1
-NIL
-HORIZONTAL
-
 BUTTON
-26
-33
-89
-66
+29
+88
+92
+121
 NIL
 setup
 NIL
@@ -99,10 +83,10 @@ NIL
 1
 
 BUTTON
-113
-34
-176
-67
+102
+90
+165
+123
 NIL
 go
 T
@@ -115,12 +99,55 @@ NIL
 NIL
 1
 
+SLIDER
+29
+25
+165
+58
+initial-treedensity
+initial-treedensity
+0
+1
+0.49
+0.01
+1
+NIL
+HORIZONTAL
+
+BUTTON
+80
+178
+143
+211
+NIL
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
 MONITOR
 44
-192
-116
-237
-NIL
+284
+144
+329
+burned patches
+count patches with [status = 4]
+17
+1
+11
+
+MONITOR
+44
+346
+140
+391
+percolated
 percolated
 17
 1
@@ -473,16 +500,6 @@ NetLogo 5.0.4
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
-<experiments>
-  <experiment name="Variation1" repetitions="3" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="1000"/>
-    <metric>percolated</metric>
-    <metric>count patches with [status = 4]</metric>
-    <steppedValueSet variable="initial-treedensity" first="0" step="0.1" last="1"/>
-  </experiment>
-</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default
