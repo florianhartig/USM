@@ -23,7 +23,17 @@ install.packages("magrittr")
 install_url("https://cran.r-project.org/src/contrib/Archive/RNetLogo/RNetLogo_1.0-1.tar.gz", dependencies =T )
 
 
-# Noch nicht installieren
+
+# Für CIP 4 läuft bleibt alles so 
+# Für CIP 3 statt des Pfades oben
+# 1. Set to 32 bit R in GlobalOptions, R, Rversion
+# 2. Restart Rstudio
+# Then set the path
+
+newPath = paste('c:\\\\Rtools\\\\bin;C:\\Rtools\\mingw_32\\bin;', Sys.getenv("PATH"), sep = "")
+Sys.setenv(PATH=newPath)
+
+# Jetzt die Packages kompilieren
 
 install_url("https://dl.dropboxusercontent.com/s/ccvpnvblf3vzuvs/BayesianTools_0.0.0.9000.tar.gz", dependencies = T)
 
