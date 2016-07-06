@@ -18,7 +18,7 @@ Sys.setenv(PATH = paste('c:\\Rtools\\bin;C:\\Rtools\\gcc-4.6.3\\bin;', Sys.geten
 
 
 # Für CIP 3 
-# 1. Set to 32 bit R in GlobalOptions, R, Rversion
+# 1. Set to 32 bit R in Tools -> GlobalOptions ->  R -> Rversion
 # 2. Restart Rstudio
 # Dann geht es weiter mit
 
@@ -28,11 +28,12 @@ Sys.setenv(PATH=newPath)
 # Jetzt die Packages kompilieren
 
 library(devtools)
-
 install_url("https://dl.dropboxusercontent.com/s/ccvpnvblf3vzuvs/BayesianTools_0.0.0.9000.tar.gz", dependencies = T)
 
 library(BayesianTools)
 ?BayesianTools
+
+# Beispiel VSEM Modell -> siehe auch ?VSEM
 
 # Create radiation data
 PAR <- VSEMcreatePAR(1:1000)
