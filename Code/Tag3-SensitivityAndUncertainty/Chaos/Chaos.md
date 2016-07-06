@@ -1,6 +1,5 @@
 # Chaos in the logistic map
 Florian Hartig  
-`r format(Sys.Date(), "%B %d, %Y")`  
 
 
 
@@ -16,6 +15,7 @@ logisticMap <- function (N0 = 0.2, r=1.7, timesteps = 50){
   return(popdyn)          
 }
 
+set.seed(123)
 
 # try out e.g. r = 0.5, 1.5. 2.4, 2.8, 3.5
 
