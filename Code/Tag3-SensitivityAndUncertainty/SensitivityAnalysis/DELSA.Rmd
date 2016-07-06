@@ -2,9 +2,17 @@
 title: "DELSA"
 author: "Florian Hartig"
 date: "13 Jul 2015"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
-```{r}
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=10, fig.height=10, warnings = F, message = F)
+```
+
+
+```{r, results='hide'}
 # Test case : the non-monotonic Sobol g-function
 # (there are 8 factors, all following the uniform distribution on [0,1])
 
@@ -16,12 +24,16 @@ x <- delsa(model=sobol.fun,
            samples=100,method="sobol")
 
 # Summary of sensitivity indices of each parameter across parameter space
+
+```
+
+
+
+```{r}
 print(x)
 
 library(ggplot2)
 library(reshape2)
 plot(x)
-
-
 ```
 

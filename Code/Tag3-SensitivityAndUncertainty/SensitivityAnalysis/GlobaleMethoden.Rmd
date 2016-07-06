@@ -2,8 +2,17 @@
 title: "Methoden für globale Sensitivitätsanalyse"
 author: "Florian Hartig"
 date: "13 Jul 2015"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=10, fig.height=10, warnings = F, message = F)
+```
+
+
+
 
 ```{r}
 library(sensitivity)
