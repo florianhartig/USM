@@ -32,23 +32,10 @@ Sys.setenv(PATH=newPath)
 library(devtools)
 install_url("https://dl.dropboxusercontent.com/s/ccvpnvblf3vzuvs/BayesianTools_0.0.0.9000.tar.gz", dependencies = T)
 
-library(BayesianTools)
-?BayesianTools
+# Old 1.0 PRELES Version
+install_url("https://dl.dropboxusercontent.com/s/zn64j1tut47v9mj/Rpreles_1.0.tar.gz", dependencies = T)
 
-# Beispiel VSEM Modell -> siehe auch ?VSEM
+# Directly from the GitHub page https://github.com/MikkoPeltoniemi/Rpreles
 
-# Create radiation data
-PAR <- VSEMcreatePAR(1:1000)
-plotTimeSeries(observed = PAR)
+devtools::install_github('MikkoPeltoniemi/Rpreles')
 
-# Model reference parameters
-refPars <- VSEMgetDefaults()
-refPars
-
-# Create prediction
-prediction <- VSEM(refPars$best, PAR) 
-oldpar <- par(mfrow = c(2,2))
-for (i in 1:4) plotTimeSeries(predicted = prediction[,i], main = colnames(prediction)[i])
-par(oldpar)
-
-# Weitere Beispiele siehe Skript
